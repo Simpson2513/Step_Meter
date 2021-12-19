@@ -1,66 +1,26 @@
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 
 public class TestStepsManager {
+    StepsManager manager1 = new StepsManager();
+    StepsManager manager2 = new StepsManager();
 
-    StepsManager test = new StepsManager();
+    @ParameterizedTest
+    @CsvSource({"7000, 12000, 17000, -1", "8000, 8000, 16000, 0", "13000, 6000, 8000, 1" })
+    public void checkComparator(int steps1, int steps2, int min, int expected) {
+        ComparatorDays comp = new ComparatorDays(min);
 
-    @Test
-    public void stepsAdd() {
-        test.setDay(1);
-        test.add(1, 1000);
-        int actual = test.add(1, 1000);
-        int expected = 8000;
+        manager1.addSteps(steps1);
+        manager1.addSteps(steps1 + 7000);
+        manager1.addSteps(steps1 + 12000);
 
-        Assertions.assertEquals(expected, actual);
+        manager2.addSteps(steps2);
+        manager2.addSteps(steps2 + 7000);
+        manager2.addSteps(steps2 + 12000);
 
+        int actual = comp.compare(manager1, manager2);
+        Assertions.assertEquals(expected, actual, "ComparatorDays class");
     }
-
-    @Test
-    public void stepsAddMinus() {
-        test.add(1, -1000);
-        int actual = test.add(1, 1000);
-        int expected = 9000;
-
-        Assertions.assertEquals(expected, actual);
-
-    }
-
-    @Test
-    public void startSetDay() {
-        int actual = test.add(2, 0);
-        int expected = 10000;
-
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void stepsAddFourTime() {
-        test.add(1, 1000);
-        test.add(1, 1000);
-        test.add(1, 2000);
-
-        int actual = test.add(1, 1000);
-        int expected = 5000;
-
-        Assertions.assertEquals(expected, actual);
-
-    }
-
-    @Test
-    public void stepsAddTwoDayThreeTime() {
-        test.add(1, 1000);
-        test.add(1, 1000);
-        test.add(2, 1000);
-        test.add(2, 1000);
-
-
-        int actual = test.add(1, 1000);
-        int expected = 7000;
-
-        Assertions.assertEquals(expected, actual);
-
-    }
-
 }
